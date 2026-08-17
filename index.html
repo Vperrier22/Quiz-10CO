@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The English-Speaking World – Big Quiz A2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#4CAF50;
+    --green-dark:#388E3C;
+    --yellow:#FFC107;
+    --yellow-dark:#FFA000;
+    --bg:#FFFDF5;
+    --card:#ffffff;
+    --text:#2E3B2E;
+    --red:#E53935;
+    --blue:#3F7CE0;
+    --purple:#8E5CD9;
+    --orange:#EF7A2E;
+    --pink:#E0578A;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Nunito',sans-serif;
+    background:linear-gradient(180deg,#FFF9E5 0%, #F3FBEF 100%);
+    color:var(--text);
+    padding-bottom:60px;
+  }
+  header{
+    background:linear-gradient(135deg,var(--green) 0%, var(--green-dark) 100%);
+    color:white;
+    padding:36px 20px 46px;
+    text-align:center;
+    border-bottom:8px solid var(--yellow);
+  }
+  header h1{
+    margin:0 0 6px;
+    font-size:2.1em;
+    font-weight:900;
+  }
+  header p{
+    margin:0;
+    font-weight:600;
+    opacity:0.95;
+    font-size:1.05em;
+  }
+  .flags-row{
+    font-size:1.8em;
+    margin-top:10px;
+    letter-spacing:6px;
+  }
+  .container{
+    max-width:780px;
+    margin:-24px auto 0;
+    padding:0 16px;
+  }
+  .progress-wrap{
+    background:var(--card);
+    border-radius:20px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+    padding:16px 20px;
+    margin-bottom:22px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-weight:700;
+    position:sticky;
+    top:8px;
+    z-index:10;
+  }
+  .progress-bar-bg{
+    flex:1;
+    background:#eee;
+    border-radius:20px;
+    height:14px;
+    overflow:hidden;
+  }
+  .progress-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--yellow),var(--green));
+    border-radius:20px;
+    transition:width .4s ease;
+  }
+  .score-badge{
+    background:var(--yellow);
+    color:var(--text);
+    padding:6px 14px;
+    border-radius:14px;
+    font-weight:800;
+    white-space:nowrap;
+  }
+  .theme-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:28px 0 12px;
+    font-weight:900;
+    font-size:1.25em;
+    color:var(--green-dark);
+  }
+  .theme-header .line{
+    flex:1;
+    height:3px;
+    background:repeating-linear-gradient(90deg,var(--yellow) 0 8px, transparent 8px 14px);
+    border-radius:4px;
+  }
+  .card{
+    background:var(--card);
+    border-radius:22px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.07);
+    padding:22px 24px;
+    margin-bottom:20px;
+    border:3px solid transparent;
+    transition:border-color .3s;
+  }
+  .card.correct{border-color:var(--green);}
+  .card.incorrect{border-color:var(--red);}
+  .q-tag{
+    display:inline-block;
+    background:#E8F5E9;
+    color:var(--green-dark);
+    font-weight:800;
+    font-size:0.78em;
+    padding:4px 12px;
+    border-radius:12px;
+    margin-bottom:10px;
+  }
+  .q-text{
+    font-size:1.15em;
+    font-weight:800;
+    margin:0 0 16px;
+    line-height:1.35;
+  }
+  .options{
+    display:grid;
+    gap:10px;
+  }
+  .option{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#FAFAF5;
+    border:2px solid #E4E4D8;
+    border-radius:14px;
+    padding:12px 16px;
+    cursor:pointer;
+    font-weight:700;
+    transition:all .15s;
+  }
+  .option:hover{background:#FFF6DA;border-color:var(--yellow);}
+  .option input{accent-color:var(--green);width:18px;height:18px;}
+  .option.picked-correct{background:#E8F5E9;border-color:var(--green);}
+  .option.picked-incorrect{background:#FDECEA;border-color:var(--red);}
+  .option.reveal-correct{background:#E8F5E9;border-color:var(--green);}
+  .feedback{
+    margin-top:12px;
+    font-weight:700;
+    font-size:0.95em;
+    padding:10px 14px;
+    border-radius:12px;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.ok{background:#E8F5E9;color:var(--green-dark);}
+  .feedback.ko{background:#FDECEA;color:#C62828;}
+  .btn-row{
+    text-align:center;
+    margin:30px 0;
+  }
+  button.main-btn{
+    background:linear-gradient(135deg,var(--yellow),var(--yellow-dark));
+    color:var(--text);
+    border:none;
+    padding:16px 38px;
+    border-radius:30px;
+    font-family:'Nunito',sans-serif;
+    font-weight:900;
+    font-size:1.1em;
+    cursor:pointer;
+    box-shadow:0 5px 0 var(--yellow-dark);
+    transition:transform .1s;
+  }
+  button.main-btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--yellow-dark);}
+  button.main-btn:disabled{opacity:0.5;cursor:not-allowed;box-shadow:none;}
+  .result-box{
+    display:none;
+    text-align:center;
+    background:linear-gradient(135deg,var(--green),var(--green-dark));
+    color:white;
+    border-radius:24px;
+    padding:34px 24px;
+    margin:24px 0;
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  }
+  .result-box.show{display:block;}
+  .result-box .stars{font-size:2.4em;margin:8px 0;}
+  .result-box h2{margin:0 0 8px;font-size:1.6em;}
+  .result-box p{font-weight:700;margin:4px 0;}
+  .scale-box{
+    background:#FAFAF5;
+    border-radius:18px;
+    padding:18px 22px;
+    margin-top:18px;
+    text-align:left;
+    font-size:0.92em;
+  }
+  .scale-row{
+    display:flex;
+    gap:10px;
+    margin:8px 0;
+    align-items:flex-start;
+  }
+  .scale-row b{min-width:70px;display:inline-block;}
+  .corrige-section{
+    background:var(--card);
+    border-radius:22px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.07);
+    padding:24px;
+    margin-top:30px;
+  }
+  .corrige-section h2{
+    text-align:center;
+    color:var(--green-dark);
+    margin-top:0;
+  }
+  .pw-row{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin:14px 0;
+  }
+  .pw-row input[type="password"]{
+    border:2px solid #ddd;
+    border-radius:12px;
+    padding:10px 14px;
+    font-family:'Nunito',sans-serif;
+    font-size:1em;
+    width:200px;
+  }
+  .pw-row button{
+    background:var(--green);
+    color:white;
+    border:none;
+    border-radius:12px;
+    padding:10px 20px;
+    font-weight:800;
+    cursor:pointer;
+  }
+  .pw-error{color:var(--red);font-weight:700;text-align:center;display:none;}
+  .corrige-list{display:none;margin-top:16px;}
+  .corrige-list.show{display:block;}
+  .corrige-item{
+    padding:12px 0;
+    border-bottom:1px solid #eee;
+  }
+  .corrige-item:last-child{border-bottom:none;}
+  .corrige-item b{color:var(--green-dark);}
+  .corrige-item .tag{
+    font-size:0.75em;
+    background:#eee;
+    color:#555;
+    padding:2px 8px;
+    border-radius:8px;
+    margin-right:6px;
+  }
+  footer{
+    text-align:center;
+    color:#999;
+    font-size:0.85em;
+    margin-top:40px;
+  }
+  @media(max-width:480px){
+    header h1{font-size:1.5em;}
+    .card{padding:18px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌍 The English-Speaking World</h1>
+  <p>Big Quiz interactif – Anglais A2 – Géo, Histoire, Sport, Musique & Culture</p>
+  <div class="flags-row">🇬🇧 🇺🇸 🇨🇦 🇦🇺 🇳🇿 🇯🇲 🇮🇳 🇿🇦</div>
+</header>
+
+<div class="container">
+
+  <div class="progress-wrap">
+    <span id="progressText">0 / 27</span>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressBar"></div></div>
+    <span class="score-badge">⭐ <span id="scoreText">0</span> pts</span>
+  </div>
+
+  <div id="quizArea"></div>
+
+  <div class="btn-row">
+    <button class="main-btn" id="submitBtn" disabled>Valider mes réponses ✅</button>
+  </div>
+
+  <div class="result-box" id="resultBox">
+    <div class="stars" id="resultStars"></div>
+    <h2 id="resultTitle"></h2>
+    <p id="resultScore"></p>
+    <p id="resultMsg"></p>
+    <div class="scale-box">
+      <div class="scale-row"><b>27 – 20 :</b> Congratulations! A real anglophile 🏆 — you know a lot about the English-speaking countries, their culture and traditions.</div>
+      <div class="scale-row"><b>19 – 13 :</b> Good! You know quite a lot, but you still have things to learn. Keep trying! 👍</div>
+      <div class="scale-row"><b>12 – 0 :</b> Keep practising! Review the explanations below and try again soon. 💪</div>
+    </div>
+  </div>
+
+  <div class="corrige-section">
+    <h2>🔒 Corrigé enseignant·e</h2>
+    <p style="text-align:center;">Entrez le mot de passe pour afficher toutes les réponses.</p>
+    <div class="pw-row">
+      <input type="password" id="pwInput" placeholder="Mot de passe">
+      <button onclick="checkPassword()">Afficher</button>
+    </div>
+    <p class="pw-error" id="pwError">Mot de passe incorrect ❌</p>
+    <div class="corrige-list" id="corrigeList"></div>
+  </div>
+
+  <footer>Créé pour la classe – geni@l anglophone 🌟</footer>
+</div>
+
+<script>
+const questions = [
+  // GÉOGRAPHIE
+  { theme:"Géographie", icon:"🗺️", q:"What is the capital of Australia?", options:["Sydney","Perth","Canberra"], correct:2, explain:"Canberra is the capital of Australia — Sydney is only the biggest city!" },
+  { theme:"Géographie", icon:"🗺️", q:"What is the capital of Canada?", options:["Montreal","Toronto","Ottawa"], correct:2, explain:"Ottawa is the capital of Canada." },
+  { theme:"Géographie", icon:"🗺️", q:"What is the capital of New Zealand?", options:["Auckland","Wellington","Free Town"], correct:1, explain:"Wellington is the capital — Auckland is the biggest city." },
+  { theme:"Géographie", icon:"🗺️", q:"What is the capital of Jamaica?", options:["Kingston","Montego Bay","Port Maria"], correct:0, explain:"Kingston is the capital of Jamaica." },
+  { theme:"Géographie", icon:"🗺️", q:"How many countries are there in the United Kingdom?", options:["3","4","5"], correct:1, explain:"The UK has 4 countries: England, Scotland, Wales and Northern Ireland." },
+  { theme:"Géographie", icon:"🗺️", q:"Which is the longest river in the USA?", options:["the Colorado","the Mississippi","the Missouri"], correct:1, explain:"The Mississippi River is the longest river in the USA." },
+
+  // HISTOIRE
+  { theme:"Histoire", icon:"📜", q:"Who was the first president of the USA?", options:["Abraham Lincoln","George Washington","Richard Nixon"], correct:1, explain:"George Washington was the first president of the United States (1789)." },
+  { theme:"Histoire", icon:"📜", q:"In which year did Christopher Columbus reach America?", options:["1620","1468","1492"], correct:2, explain:"Columbus reached the Americas in 1492." },
+  { theme:"Histoire", icon:"📜", q:"Who is the patron saint of England?", options:["St David","St George","St Patrick"], correct:1, explain:"St George is the patron saint of England (23 April)." },
+  { theme:"Histoire", icon:"📜", q:"William Shakespeare was born in...", options:["Stratford-upon-Avon","Liverpool","Oxford"], correct:0, explain:"Shakespeare was born in Stratford-upon-Avon in 1564." },
+  { theme:"Histoire", icon:"📜", q:"Where does King Charles III officially live and work in London?", options:["Big Ben","Buckingham Palace","Tower of London"], correct:1, explain:"Buckingham Palace is the official residence of the British monarch." },
+  { theme:"Histoire", icon:"📜", q:"What do Americans celebrate on the 4th of July?", options:["Thanksgiving","Independence Day","St Patrick's Day"], correct:1, explain:"Independence Day celebrates the USA's independence from Britain in 1776." },
+
+  // CULTURE & TRADITIONS
+  { theme:"Culture & traditions", icon:"🎉", q:"Thanksgiving is celebrated mainly in...", options:["England","Ireland","the USA"], correct:2, explain:"Thanksgiving is a major holiday in the USA (and also in Canada, on a different date)." },
+  { theme:"Culture & traditions", icon:"🎉", q:"Where do Aborigines traditionally live?", options:["in Australia","in New Zealand","in the United States"], correct:0, explain:"Aboriginal Australians are the native people of Australia." },
+  { theme:"Culture & traditions", icon:"🎉", q:"How many states are there in the USA?", options:["50","51","52"], correct:0, explain:"The USA has 50 states." },
+  { theme:"Culture & traditions", icon:"🎉", q:"What city is nicknamed 'the Big Apple'?", options:["Washington","New York","Los Angeles"], correct:1, explain:"New York City is famously nicknamed 'the Big Apple'." },
+  { theme:"Culture & traditions", icon:"🎉", q:"What colour is a traditional British postbox / phone box?", options:["Blue","Red","Green"], correct:1, explain:"British postboxes and telephone boxes are famously bright red." },
+  { theme:"Culture & traditions", icon:"🎉", q:"What do British people traditionally drink every afternoon?", options:["Coffee","Tea","Hot chocolate"], correct:1, explain:"'Afternoon tea' is a well-known British tradition." },
+
+  // SPORT
+  { theme:"Sport", icon:"⚽", q:"The famous sprinter Usain Bolt is from...", options:["South Africa","Kenya","Jamaica"], correct:2, explain:"Usain Bolt is from Jamaica." },
+  { theme:"Sport", icon:"⚽", q:"What is the nickname of the New Zealand national rugby team?", options:["the Springboks","the Wallabies","the All Blacks"], correct:2, explain:"New Zealand's rugby team is called the All Blacks." },
+  { theme:"Sport", icon:"⚽", q:"What is the most popular sport in Canada?", options:["Football","Tennis","Ice hockey"], correct:2, explain:"Ice hockey is Canada's most popular sport — even the national winter sport!" },
+  { theme:"Sport", icon:"⚽", q:"Cricket is especially popular in the UK, Australia and...", options:["India","Germany","Brazil"], correct:0, explain:"Cricket is hugely popular in India, as well as the UK and Australia." },
+
+  // MUSIQUE
+  { theme:"Musique", icon:"🎵", q:"Which famous British band came from Liverpool?", options:["Queen","The Beatles","Coldplay"], correct:1, explain:"The Beatles were formed in Liverpool in 1960." },
+
+  // ANCIENNES COLONIES BRITANNIQUES : INDE & AFRIQUE DU SUD
+  { theme:"Inde & Afrique du Sud", icon:"🌏", q:"What is the capital of India?", options:["New Delhi","Calcutta","Bombay"], correct:0, explain:"New Delhi is the capital of India — Calcutta (Kolkata) and Bombay (Mumbai) are other major cities." },
+  { theme:"Inde & Afrique du Sud", icon:"🌏", q:"Until which year was India a British colony?", options:["1947","1900","1975"], correct:0, explain:"India became independent from Britain in 1947." },
+  { theme:"Inde & Afrique du Sud", icon:"🌏", q:"What is the capital of South Africa's legislature (parliament)?", options:["Pretoria","Cape Town","Johannesburg"], correct:1, explain:"South Africa has three capitals: Pretoria (executive), Bloemfontein (judicial) and Cape Town, home of Parliament." },
+  { theme:"Inde & Afrique du Sud", icon:"🌏", q:"Which South African leader fought against apartheid and became president in 1994?", options:["Desmond Tutu","Nelson Mandela","Cecil Rhodes"], correct:1, explain:"Nelson Mandela became South Africa's first Black president in 1994, after the end of apartheid." }
+];
+
+let answers = new Array(questions.length).fill(null);
+let submitted = false;
+
+function renderQuiz(){
+  const area = document.getElementById('quizArea');
+  area.innerHTML = '';
+  let lastTheme = null;
+
+  questions.forEach((item, idx) => {
+    if(item.theme !== lastTheme){
+      const th = document.createElement('div');
+      th.className = 'theme-header';
+      th.innerHTML = `<span>${item.icon} ${item.theme}</span><span class="line"></span>`;
+      area.appendChild(th);
+      lastTheme = item.theme;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = 'card-' + idx;
+
+    let optsHtml = '';
+    item.options.forEach((opt, oIdx) => {
+      optsHtml += `
+        <label class="option" id="opt-${idx}-${oIdx}">
+          <input type="radio" name="q${idx}" value="${oIdx}" onchange="selectAnswer(${idx}, ${oIdx})">
+          ${opt}
+        </label>`;
+    });
+
+    card.innerHTML = `
+      <span class="q-tag">Question ${idx+1}/${questions.length}</span>
+      <p class="q-text">${item.q}</p>
+      <div class="options">${optsHtml}</div>
+      <div class="feedback" id="feedback-${idx}"></div>
+    `;
+    area.appendChild(card);
+  });
+}
+
+function selectAnswer(qIdx, oIdx){
+  if(submitted) return;
+  answers[qIdx] = oIdx;
+  updateProgress();
+}
+
+function updateProgress(){
+  const answered = answers.filter(a => a !== null).length;
+  document.getElementById('progressText').textContent = answered + ' / ' + questions.length;
+  document.getElementById('progressBar').style.width = (answered/questions.length*100) + '%';
+  document.getElementById('submitBtn').disabled = answered !== questions.length;
+}
+
+document.getElementById('submitBtn').addEventListener('click', () => {
+  if(submitted) return;
+  submitted = true;
+  let score = 0;
+
+  questions.forEach((item, idx) => {
+    const chosen = answers[idx];
+    const isCorrect = chosen === item.correct;
+    if(isCorrect) score++;
+
+    const card = document.getElementById('card-' + idx);
+    card.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+    item.options.forEach((opt, oIdx) => {
+      const optEl = document.getElementById(`opt-${idx}-${oIdx}`);
+      optEl.querySelector('input').disabled = true;
+      if(oIdx === item.correct){
+        optEl.classList.add('reveal-correct');
+      }
+      if(oIdx === chosen && !isCorrect){
+        optEl.classList.add('picked-incorrect');
+      }
+      if(oIdx === chosen && isCorrect){
+        optEl.classList.add('picked-correct');
+      }
+    });
+
+    const fb = document.getElementById('feedback-' + idx);
+    fb.classList.add('show', isCorrect ? 'ok' : 'ko');
+    fb.textContent = (isCorrect ? '✅ Correct! ' : '❌ Not quite. ') + item.explain;
+  });
+
+  document.getElementById('scoreText').textContent = score;
+  document.getElementById('submitBtn').style.display = 'none';
+
+  let stars = '⭐';
+  let title = 'Good try!';
+  let msg = 'Review the explanations above and try again next time.';
+  if(score >= 20){ stars = '⭐⭐⭐'; title = 'Excellent! A real anglophile! 🏆'; msg = "You know the English-speaking world really well!"; }
+  else if(score >= 13){ stars = '⭐⭐'; title = 'Well done! 🎉'; msg = "Great job — just a bit more to learn."; }
+  else { stars = '⭐'; title = 'Keep practising! 💪'; msg = "Have another look at the explanations and try again soon."; }
+
+  document.getElementById('resultStars').textContent = stars;
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultScore').textContent = `Score: ${score} / ${questions.length}`;
+  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('resultBox').classList.add('show');
+  document.getElementById('resultBox').scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+function checkPassword(){
+  const pw = document.getElementById('pwInput').value;
+  const err = document.getElementById('pwError');
+  const list = document.getElementById('corrigeList');
+  if(pw === 'worldenglish2025'){
+    err.style.display = 'none';
+    list.classList.add('show');
+    list.innerHTML = questions.map((item, idx) => `
+      <div class="corrige-item">
+        <span class="tag">${item.icon} ${item.theme}</span><br>
+        <b>${idx+1}. ${item.q}</b><br>
+        ✅ Réponse : ${item.options[item.correct]}<br>
+        <span style="color:#666;">${item.explain}</span>
+      </div>
+    `).join('');
+  } else {
+    err.style.display = 'block';
+    list.classList.remove('show');
+  }
+}
+
+renderQuiz();
+</script>
+
+</body>
+</html>
